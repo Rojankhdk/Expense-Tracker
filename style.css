@@ -1,0 +1,99 @@
+/* Color Variables */
+:root {
+    --bg-beige: #F5F5DC;
+    --dark-brown: #5D4037;
+    --light-brown: #8D6E63;
+    --white: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: var(--bg-beige);
+    color: var(--dark-brown);
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--dark-brown);
+}
+
+.navbar nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.navbar nav a {
+    text-decoration: none;
+    color: var(--dark-brown);
+    font-weight: 600;
+}
+
+.btn-nav {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--dark-brown);
+}
+
+.signup {
+    background-color: var(--dark-brown);
+    color: white;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    background-color: var(--light-brown);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* How It Works Section */
+.how-it-works {
+    background-color: var(--light-brown);
+    color: white;
+    padding: 80px 20px;
+    margin-top: 50px;
+}
+
+.how-it-works .container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: var(--light-brown);
+    padding: 12px 25px;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
