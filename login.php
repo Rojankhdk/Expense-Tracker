@@ -3,32 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - BudgetApp</title>
-    <link rel="stylesheet" href="logincss.css">
+    <title>Login | SpendWise</title>
+    <link rel="stylesheet" href="register.css">
 </head>
-<body>
+<body class="auth-page">
 
-    <div class="login-container">
-        <!-- Linked back to index.php -->
-        <a href="index.php" style="text-decoration: none;">
-            <h2>Welcome Back</h2>
-        </a>
-        
-        <form action="process_login.php" method="POST">
-            <div class="form-group">
-                <label for="email">Email</label>
+    <div class="auth-container">
+        <h2>Login</h2>
+        <form action="login.php" method="POST">
+            <div class="input-group">
+                <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" required>
             </div>
-            
-            <div class="form-group">
+            <div class="input-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-
-            <button type="submit" class="login-btn">LOG IN</button>
-            <p class="signup-link">Don't have an account? <a href="#">Sign up here</a></p>
+            <button type="submit" class="cta-button">Login</button>
         </form>
+        <p class="auth-footer">Don't have an account? <a href="register.php">Register here</a></p>
+        <p class="auth-footer"><a href="index.html">← Back to Home</a></p>
     </div>
 
+    <?php
+    // Start session to manage user login state
+    session_start();
+    
+    // Connect to database
+    if (file_exists('db.php')) {
+        require 'db.php';
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
+        try {
+            // Find the user with the provided email
+            $sql = "SELECT id, full_name, password FROM users WHERE email = :email";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Verify password matches the stored hash
+            if ($user && password_verify($password, $user['password'])) {
+                // Login successful: Save user info in session
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['full_name'];
+                
+                echo "<script>
+                        alert('Login successful! Redirecting...'); 
+                        window.location.href='dashboard.php';
+                      </script>";
+            } else {
+                echo "<script>alert('Invalid email or password.');</script>";
+            }
+        } catch (PDOException $e) {
+            echo "<script>alert('Database error: Unable to process login.');</script>";
+        }
+    }
+    ?>
 </body>
 </html>

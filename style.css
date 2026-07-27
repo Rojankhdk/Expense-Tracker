@@ -1,99 +1,132 @@
-/* Color Variables */
+/* 1. Root Variables for Color Palette */
 :root {
     --bg-beige: #F5F5DC;
-    --dark-brown: #5D4037;
-    --light-brown: #8D6E63;
+    --hero-beige: #FAF3E0;
+    --text-brown: #5D4037;
+    --deep-brown: #3E2723;
+    --button-brown: #8D6E63;
     --white: #ffffff;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* 2. Global Reset */
+* {
     margin: 0;
-    background-color: var(--bg-beige);
-    color: var(--dark-brown);
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Navbar */
+body {
+    background-color: var(--bg-beige);
+    color: var(--text-brown);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+/* 3. Navigation Bar */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 50px;
+    padding: 2rem 5%;
 }
 
 .logo {
-    font-size: 24px;
+    font-size: 1.8rem;
     font-weight: bold;
-    color: var(--dark-brown);
+    color: var(--deep-brown);
 }
 
-.navbar nav ul {
+.nav-links {
     list-style: none;
     display: flex;
-    gap: 20px;
     align-items: center;
+    gap: 25px;
 }
 
-.navbar nav a {
+.nav-links a {
     text-decoration: none;
-    color: var(--dark-brown);
-    font-weight: 600;
+    color: var(--text-brown);
+    font-weight: 500;
 }
 
-.btn-nav {
-    padding: 8px 20px;
-    border-radius: 20px;
-    border: 1px solid var(--dark-brown);
+/* Navigation Button Styling */
+.nav-btn {
+    border: 1px solid var(--deep-brown);
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
 }
 
-.signup {
-    background-color: var(--dark-brown);
-    color: white;
+.nav-btn.signup {
+    background-color: var(--deep-brown);
+    color: var(--white);
+    border: none;
 }
 
-/* Hero Section */
+.nav-btn.signup:hover {
+    background-color: var(--button-brown);
+}
+
+/* 4. Hero Section */
 .hero {
     text-align: center;
-    padding: 60px 20px;
+    padding: 80px 20px;
+    background-color: var(--hero-beige);
 }
 
 .hero h1 {
     font-size: 3rem;
+    color: var(--deep-brown);
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 30px;
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--deep-brown);
+    color: var(--white);
+    padding: 15px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--button-brown);
+}
+
+/* 5. Features Section */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 50px 5%;
+}
+
+.feature-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    /* Border-top removed */
+}
+
+.feature-card h3 {
+    color: var(--deep-brown);
     margin-bottom: 10px;
 }
 
-.btn-primary {
-    background-color: var(--light-brown);
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-/* How It Works Section */
-.how-it-works {
-    background-color: var(--light-brown);
-    color: white;
-    padding: 80px 20px;
-    margin-top: 50px;
-}
-
-.how-it-works .container {
-    max-width: 600px;
-    margin: 0 auto;
+/* 6. Footer */
+footer {
     text-align: center;
-}
-
-.btn-secondary {
-    background-color: white;
-    color: var(--light-brown);
-    padding: 12px 25px;
-    border: none;
-    border-radius: 50px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 20px;
+    padding: 40px;
+    background-color: var(--hero-beige);
+    color: var(--deep-brown);
+    border-top: 1px solid var(--button-brown);
 }
