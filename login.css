@@ -1,9 +1,7 @@
-/* Page Setup */
-body {
-    /* Soft Off-White/Cream background */
+body.auth-page {
     background-color: #FDFBF7; 
-    color: #5D4037; /* Brown text */
-    font-family: sans-serif;
+    color: #5D4037; 
+    font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,57 +9,57 @@ body {
     margin: 0;
 }
 
-/* Card Container */
 .auth-container {
-    background: #ffffff; /* Pure white card */
+    background: #ffffff; 
     padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Soft shadow */
+    border-radius: 12px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
     width: 350px;
 }
 
 .auth-container h2 {
     text-align: center;
-    color: #3E2723; /* Dark Brown */
-    margin-bottom: 20px;
+    color: #3E2723; 
+    margin-bottom: 25px;
 }
 
-/* Form Fields */
-.input-group {
-    margin-bottom: 15px;
-}
+.input-group { margin-bottom: 15px; }
 
 .input-group label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin-bottom: 8px;
+    font-weight: 600;
 }
 
 .input-group input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #D7CCC8; /* Soft Brown Border */
-    border-radius: 4px;
-    background-color: #F9F9F9; /* Very light grey */
+    padding: 12px;
+    border: 1px solid #D7CCC8;
+    border-radius: 6px;
+    background-color: #FAFAFA;
+    box-sizing: border-box;
 }
 
-/* Button */
+.input-group input:focus {
+    border-color: #8D6E63;
+    outline: none;
+    background-color: #ffffff;
+}
+
 .cta-button {
     width: 100%;
-    padding: 10px;
-    background-color: #3E2723; /* Dark Brown */
+    padding: 12px;
+    background-color: #3E2723; 
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: 0.3s;
 }
 
-.cta-button:hover {
-    background-color: #8D6E63; /* Lighter Brown */
-}
+.cta-button:hover { background-color: #5D4037; }
 
-/* Footer Links */
 .auth-footer {
     text-align: center;
     margin-top: 15px;

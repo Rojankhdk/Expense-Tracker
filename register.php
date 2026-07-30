@@ -26,7 +26,7 @@
             <button type="submit" class="cta-button">Register</button>
         </form>
         <p class="auth-footer">Already have an account? <a href="login.php">Login here</a></p>
-        <p class="auth-footer"><a href="index.html">← Back to Home</a></p>
+        <p class="auth-footer"><a href="index.html">Back to Home</a></p>
     </div>
 
     <?php

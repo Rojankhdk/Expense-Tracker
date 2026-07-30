@@ -32,14 +32,12 @@ $transactions->execute([$_SESSION['user_id']]);
 <head>
     <meta charset="UTF-8">
     <title>SpendWise | Dashboard</title>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
 
     <div class="sidebar">
-        <!-- Top Section -->
         <div class="sidebar-top">
             <h2>SpendWise</h2>
             <ul>
@@ -49,8 +47,6 @@ $transactions->execute([$_SESSION['user_id']]);
                 <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
             </ul>
         </div>
-
-        <!-- Bottom Section -->
         <div class="sidebar-bottom">
             <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
@@ -62,18 +58,28 @@ $transactions->execute([$_SESSION['user_id']]);
         </header>
 
         <div class="dashboard-grid">
-            <!-- Add Transaction Form -->
+            
+            <!-- Add Income Form -->
             <div class="card">
-                <h3>Add New Record</h3>
+                <h3>Add Income</h3>
                 <form method="POST">
-                    <select name="type" required>
-                        <option value="expense">Expense</option>
-                        <option value="income">Income</option>
-                    </select>
+                    <input type="hidden" name="type" value="income">
                     <input type="number" name="amount" placeholder="Amount" required>
-                    <input type="text" name="category_source" placeholder="Category or Source" required>
+                    <input type="text" name="category_source" placeholder="Source (e.g. Salary)" required>
                     <input type="text" name="description" placeholder="Description">
-                    <button type="submit" class="cta-button">Save Record</button>
+                    <button type="submit" class="cta-button income-btn">Save Income</button>
+                </form>
+            </div>
+
+            <!-- Add Expense Form -->
+            <div class="card">
+                <h3>Add Expense</h3>
+                <form method="POST">
+                    <input type="hidden" name="type" value="expense">
+                    <input type="number" name="amount" placeholder="Amount" required>
+                    <input type="text" name="category_source" placeholder="Category (e.g. Food)" required>
+                    <input type="text" name="description" placeholder="Description">
+                    <button type="submit" class="cta-button expense-btn">Save Expense</button>
                 </form>
             </div>
 
@@ -90,7 +96,7 @@ $transactions->execute([$_SESSION['user_id']]);
                             <td><?php echo date('M d, Y', strtotime($t['created_at'])); ?></td>
                             <td><span class="badge <?php echo $t['type']; ?>"><?php echo ucfirst($t['type']); ?></span></td>
                             <td><?php echo htmlspecialchars($t['category_source']); ?></td>
-                            <td>$<?php echo number_format($t['amount'], 2); ?></td>
+                            <td><?php echo number_format($t['amount'], 2); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
