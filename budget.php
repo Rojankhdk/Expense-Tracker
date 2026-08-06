@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([$user_id, $category_name]);
         }
         $popup_title = "Success!";
-        $popup_message = "Category added!";
+        $popup_message = "Category added successfully!";
     }
 
     if ($_POST['form_type'] == 'set_budget') {
