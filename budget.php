@@ -11,7 +11,6 @@ $user_id = $_SESSION['user_id'];
 $popup_message = "";
 $popup_title = "";
 
-// Handle Form Submissions
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($_POST['form_type'] == 'add_category') {
@@ -43,12 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Fetch this user's categories
+
 $cat_stmt = $pdo->prepare("SELECT category_id, category_name FROM category WHERE user_id = ? ORDER BY category_name");
 $cat_stmt->execute([$user_id]);
 $categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch Budgets
+
 $budgets = $pdo->prepare("
     SELECT b.month_year, c.category_name, b.amount
     FROM monthly_budget b
@@ -59,7 +58,7 @@ $budgets = $pdo->prepare("
 $budgets->execute([$user_id]);
 $budget_list = $budgets->fetchAll(PDO::FETCH_ASSOC);
 
-// Get current year-month string for default input value (e.g., '2026-08')
+
 $default_month = date('Y-m');
 ?>
 
@@ -163,7 +162,7 @@ $default_month = date('Y-m');
         </div>
     </div>
 
-    <!-- Custom Popup Modal -->
+    
     <div id="popupModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 id="modalTitle">Success!</h3>

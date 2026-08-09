@@ -1,4 +1,3 @@
-/* Page Setup */
 body.auth-page {
     background-color: #FDFBF7; 
     color: #5D4037; 
@@ -9,7 +8,6 @@ body.auth-page {
     flex-direction: column;
 }
 
-/* Navbar matching index.html and login.css exactly */
 .navbar {
     display: flex;
     justify-content: flex-start;

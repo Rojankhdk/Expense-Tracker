@@ -8,7 +8,6 @@ body.auth-page {
     flex-direction: column;
 }
 
-/* Matches style.css navbar padding and aligns the single logo perfectly */
 .navbar {
     display: flex;
     justify-content: flex-start;

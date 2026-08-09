@@ -35,7 +35,6 @@
         </div>
     </div>
 
-    <!-- Custom Popup Modal HTML -->
     <div id="popupModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 id="modalTitle">Notice</h3>
@@ -77,7 +76,6 @@
     }
     ?>
 
-    <!-- JavaScript to handle modal behavior -->
     <script>
         function showModal(title, message, isSuccess) {
             const modal = document.getElementById('popupModal');

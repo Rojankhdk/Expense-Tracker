@@ -5,12 +5,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') { header("Loca
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch All Transactions from the unified Transaction Details view
 $transactions = $pdo->prepare("SELECT * FROM transaction_details WHERE user_id = ? ORDER BY trans_date DESC");
 $transactions->execute([$user_id]);
 $all_transactions = $transactions->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch Current Month Budget Status
+
 $current_month = date('Y-m');
 $summary_stmt = $pdo->prepare("
     SELECT c.category_name, b.amount AS budget_limit, IFNULL(SUM(e.amount), 0) AS actual_spent
@@ -72,7 +71,6 @@ $budget_status = $summary_stmt->fetchAll(PDO::FETCH_ASSOC);
                 </table>
             </div>
 
-            <!-- Current Month Budget Status -->
             <div class="card full-width">
                 <h3>Budget Status (<?php echo $current_month; ?>)</h3>
                 <table>

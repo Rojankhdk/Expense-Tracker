@@ -72,7 +72,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- Custom Popup Modal HTML -->
     <div id="popupModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 id="modalTitle">Notice</h3>
@@ -81,7 +80,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <!-- JavaScript to handle modal behavior -->
     <script>
         function showModal(title, message, redirectUrl) {
             const modal = document.getElementById('popupModal');

@@ -11,7 +11,6 @@ $user_id = $_SESSION['user_id'];
 $popup_message = "";
 $popup_title = "";
 
-// 1. Handle Form Submissions
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($_POST['form_type'] == 'add_category') {
