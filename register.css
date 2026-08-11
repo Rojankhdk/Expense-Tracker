@@ -1,76 +1,154 @@
 /* Page Setup */
-body {
-    /* Changed from #F5F5DC (Beige) to #FDFBF7 (Soft Off-White/Cream) */
+body.auth-page {
     background-color: #FDFBF7; 
-    color: #5D4037; /* Brown */
-    font-family: sans-serif;
+    color: #5D4037; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar matching index.html and login.css exactly */
+.navbar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 2rem 5%;
+    width: 100%;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #3E2723;
+    text-decoration: none;
+}
+
+.logo:hover {
+    color: #8D6E63;
+}
+
+/* Wrapper to center the register card nicely */
+.auth-wrapper {
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
+    padding: 20px;
 }
 
 /* Card Container */
 .auth-container {
-    background: #ffffff; /* Keep pure white for the card */
-    padding: 30px;
+    background: #ffffff; 
+    padding: 20px 25px; 
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Softer shadow */
-    width: 350px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+    width: 100%;
+    max-width: 320px; 
 }
 
 .auth-container h2 {
     text-align: center;
-    color: #3E2723; /* Dark Brown */
-    margin-bottom: 20px;
+    color: #3E2723; 
+    margin-bottom: 15px;
+    font-size: 1.5rem;
 }
 
 /* Form Fields */
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 12px; 
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     font-weight: bold;
+    font-size: 0.9rem;
 }
 
-.input-group input {
+.input-group input, 
+.input-group select {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #D7CCC8; /* Soft Brown Border */
+    padding: 8px 10px; 
+    border: 1px solid #D7CCC8; 
     border-radius: 4px;
-    /* Changed from #FAF3E0 (Light Beige) to #F9F9F9 (Very Light Grey/White) */
     background-color: #F9F9F9; 
+    box-sizing: border-box;
+    font-family: inherit;
+    color: #5D4037;
+    font-size: 0.9rem;
+}
+
+.input-group input:focus, 
+.input-group select:focus {
+    border-color: #8D6E63;
+    outline: none;
+    background-color: #ffffff;
 }
 
 /* Button */
 .cta-button {
     width: 100%;
     padding: 10px;
-    background-color: #3E2723; /* Dark Brown */
+    background-color: #3E2723; 
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 0.95rem;
+    transition: background 0.3s ease;
 }
 
 .cta-button:hover {
-    background-color: #8D6E63; /* Lighter Brown */
+    background-color: #8D6E63; 
 }
 
 /* Footer Links */
 .auth-footer {
     text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
+    margin-top: 12px;
+    font-size: 13px;
 }
 
 .auth-footer a {
     color: #3E2723;
     font-weight: bold;
     text-decoration: none;
+}
+
+/* Custom Modal Popup Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(62, 39, 35, 0.5); /* Dim background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    width: 300px;
+    text-align: center;
+}
+
+.modal-content h3 {
+    color: #3E2723;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+.modal-content p {
+    color: #5D4037;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
 }
