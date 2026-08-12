@@ -2,29 +2,45 @@
 session_start();
 require 'db.php';
 
-if (!isset($_SESSION['user_id'])) { 
-    header("Location: login.php"); 
-    exit(); 
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'user') {
+    header("Location: login.php");
+    exit();
 }
 
-// 1. Handle Form Submission & Popup Triggers
+$user_id = $_SESSION['user_id'];
 $popup_message = "";
 $popup_title = "";
 
+// 1. Handle Form Submissions
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user_id = $_SESSION['user_id'];
-    $amount = $_POST['amount'];
-    $category = $_POST['category_source'];
-    $description = $_POST['description'] ?? '';
 
-    if ($_POST['type'] == 'income') {
-        $stmt = $pdo->prepare("INSERT INTO incomes (user_id, amount, category_source, description) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$user_id, $amount, $category, $description]);
+    if ($_POST['form_type'] == 'add_category') {
+        $category_name = trim($_POST['category_name']);
+        if ($category_name !== '') {
+            $stmt = $pdo->prepare("INSERT IGNORE INTO category (user_id, category_name) VALUES (?, ?)");
+            $stmt->execute([$user_id, $category_name]);
+        }
+        $popup_title = "Success!";
+        $popup_message = "Category added!";
+    }
+
+    if ($_POST['form_type'] == 'income') {
+        $amount = $_POST['amount'];
+        $source = $_POST['source'];
+
+        $stmt = $pdo->prepare("INSERT INTO income (user_id, amount, source) VALUES (?, ?, ?)");
+        $stmt->execute([$user_id, $amount, $source]);
         $popup_title = "Success!";
         $popup_message = "Income added successfully!";
-    } else {
-        $stmt = $pdo->prepare("INSERT INTO transactions (user_id, amount, category_source, description) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$user_id, $amount, $category, $description]);
+    }
+
+    if ($_POST['form_type'] == 'expense') {
+        $amount = $_POST['amount'];
+        $category_id = $_POST['category_id'];
+        $description = $_POST['description'] ?? '';
+
+        $stmt = $pdo->prepare("INSERT INTO expenses (user_id, category_id, amount, description) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$user_id, $category_id, $amount, $description]);
         $popup_title = "Success!";
         $popup_message = "Expense added successfully!";
     }
@@ -33,32 +49,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $current_month = date('Y-m');
 
 // 2. Fetch Totals for Balance
-$inc_stmt = $pdo->prepare("SELECT SUM(amount) FROM incomes WHERE user_id = ? AND DATE_FORMAT(created_at, '%Y-%m') = ?");
-$inc_stmt->execute([$_SESSION['user_id'], $current_month]);
+$inc_stmt = $pdo->prepare("SELECT SUM(amount) FROM income WHERE user_id = ? AND DATE_FORMAT(income_date, '%Y-%m') = ?");
+$inc_stmt->execute([$user_id, $current_month]);
 $total_income = $inc_stmt->fetchColumn() ?: 0;
 
-$exp_stmt = $pdo->prepare("SELECT SUM(amount) FROM transactions WHERE user_id = ? AND DATE_FORMAT(created_at, '%Y-%m') = ?");
-$exp_stmt->execute([$_SESSION['user_id'], $current_month]);
+$exp_stmt = $pdo->prepare("SELECT SUM(amount) FROM expenses WHERE user_id = ? AND DATE_FORMAT(expense_date, '%Y-%m') = ?");
+$exp_stmt->execute([$user_id, $current_month]);
 $total_expenses = $exp_stmt->fetchColumn() ?: 0;
 
 $remaining = $total_income - $total_expenses;
 
-// 3. Fetch Budget Overview 
+// 3. Fetch Budget Overview (joined through category_id, not category name)
 $summary_stmt = $pdo->prepare("
-    SELECT b.category, b.amount AS budget_limit, IFNULL(SUM(t.amount), 0) AS actual_spent
-    FROM budgets b
-    LEFT JOIN transactions t ON TRIM(b.category) = TRIM(t.category_source) 
-        AND t.user_id = b.user_id 
-        AND DATE_FORMAT(t.created_at, '%Y-%m') = LEFT(b.month_year, 7)
-    WHERE b.user_id = ? AND LEFT(b.month_year, 7) = ?
-    GROUP BY b.category
+    SELECT c.category_name, b.amount AS budget_limit, IFNULL(SUM(e.amount), 0) AS actual_spent
+    FROM monthly_budget b
+    JOIN category c ON c.category_id = b.category_id
+    LEFT JOIN expenses e ON e.category_id = b.category_id
+        AND e.user_id = b.user_id
+        AND DATE_FORMAT(e.expense_date, '%Y-%m') = b.month_year
+    WHERE b.user_id = ? AND b.month_year = ?
+    GROUP BY b.budget_id, c.category_name, b.amount
 ");
-$summary_stmt->execute([$_SESSION['user_id'], $current_month]);
+$summary_stmt->execute([$user_id, $current_month]);
 $summary = $summary_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// 4. Fetch available categories
-$cat_stmt = $pdo->prepare("SELECT DISTINCT category FROM budgets WHERE user_id = ?");
-$cat_stmt->execute([$_SESSION['user_id']]);
+// 4. Fetch this user's categories (for the expense dropdown)
+$cat_stmt = $pdo->prepare("SELECT category_id, category_name FROM category WHERE user_id = ? ORDER BY category_name");
+$cat_stmt->execute([$user_id]);
 $categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -79,7 +96,6 @@ $categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
                 <li><a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="transaction.php"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
                 <li><a href="budget.php"><i class="fas fa-wallet"></i> Budgets</a></li>
-                <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
             </ul>
         </div>
         <div class="sidebar-footer">
@@ -113,17 +129,17 @@ $categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
                 </thead>
                 <tbody>
                     <?php if (count($summary) > 0): ?>
-                        <?php foreach ($summary as $row): 
+                        <?php foreach ($summary as $row):
                             if ($row['actual_spent'] > $row['budget_limit']) {
                                 $status = "Over Budget";
-                                $status_color = "#c0392b"; 
+                                $status_color = "#c0392b";
                             } else {
                                 $status = "Within Budget";
-                                $status_color = "#27ae60"; 
+                                $status_color = "#27ae60";
                             }
                         ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($row['category']); ?></td>
+                            <td><?php echo htmlspecialchars($row['category_name']); ?></td>
                             <td><?php echo number_format($row['budget_limit'], 2); ?></td>
                             <td><?php echo number_format($row['actual_spent'], 2); ?></td>
                             <td style="color: <?php echo $status_color; ?>; font-weight: bold;">
@@ -142,12 +158,12 @@ $categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="card">
                 <h3>Add Income</h3>
                 <form method="POST">
-                    <input type="hidden" name="type" value="income">
+                    <input type="hidden" name="form_type" value="income">
                     <div class="input-group">
                         <input type="number" name="amount" step="0.01" placeholder="Amount" required>
                     </div>
                     <div class="input-group">
-                        <input type="text" name="category_source" placeholder="Source (e.g. Salary)" required>
+                        <input type="text" name="source" placeholder="Source (e.g. Salary)" required>
                     </div>
                     <button type="submit" class="cta-button income-btn">Save Income</button>
                 </form>
@@ -155,23 +171,37 @@ $categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="card">
                 <h3>Add Expense</h3>
-                <form method="POST">
-                    <input type="hidden" name="type" value="expense">
-                    <div class="input-group">
-                        <input type="number" name="amount" step="0.01" placeholder="Amount" required>
-                    </div>
-                    <div class="input-group">
-                        <select name="category_source" required>
-                            <option value="" disabled selected>Select Category</option>
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?php echo htmlspecialchars($cat['category']); ?>">
-                                    <?php echo htmlspecialchars($cat['category']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <button type="submit" class="cta-button expense-btn">Save Expense</button>
-                </form>
+                <?php if (count($categories) === 0): ?>
+                    <p>You don't have any categories yet. Add one first, then log an expense.</p>
+                    <form method="POST">
+                        <input type="hidden" name="form_type" value="add_category">
+                        <div class="input-group">
+                            <input type="text" name="category_name" placeholder="New category (e.g. Food)" required>
+                        </div>
+                        <button type="submit" class="cta-button expense-btn">Add Category</button>
+                    </form>
+                <?php else: ?>
+                    <form method="POST">
+                        <input type="hidden" name="form_type" value="expense">
+                        <div class="input-group">
+                            <input type="number" name="amount" step="0.01" placeholder="Amount" required>
+                        </div>
+                        <div class="input-group">
+                            <select name="category_id" required>
+                                <option value="" disabled selected>Select Category</option>
+                                <?php foreach ($categories as $cat): ?>
+                                    <option value="<?php echo $cat['category_id']; ?>">
+                                        <?php echo htmlspecialchars($cat['category_name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="description" placeholder="Description (optional)">
+                        </div>
+                        <button type="submit" class="cta-button expense-btn">Save Expense</button>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
     </div>

@@ -1,3 +1,44 @@
+<?php
+session_start();
+require 'db.php';
+
+define('ADMIN_EMAIL', 'admin@spendwise.com');
+define('ADMIN_PASSWORD', 'Password123');
+
+$popup_script = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    if ($email === ADMIN_EMAIL && $password === ADMIN_PASSWORD) {
+        $_SESSION['user_id'] = 0;
+        $_SESSION['user_name'] = 'System Admin';
+        $_SESSION['role'] = 'admin';
+
+        $popup_script = "showModal('Success', 'Login Successful', 'admin_dashboard.php');";
+    } else {
+        try {
+            $sql = "SELECT user_id, username, password FROM user WHERE email = :email";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['user_name'] = $user['username'];
+                $_SESSION['role'] = 'user';
+
+                $popup_script = "showModal('Success', 'Login Successful', 'dashboard.php');";
+            } else {
+                $popup_script = "showModal('Error', 'Invalid email or password.', null);";
+            }
+        } catch (PDOException $e) {
+            $popup_script = "showModal('Error', 'Database error.', null);";
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,68 +77,9 @@
         <div class="modal-content">
             <h3 id="modalTitle">Notice</h3>
             <p id="modalMessage">This is a message.</p>
-            <button id="modalBtn" class="cta-button">OK</button>
+            <button id="modalBtn" class="modal-btn">OK</button>
         </div>
     </div>
-
-    <?php
-    session_start();
-    if (file_exists('db.php')) {
-        require 'db.php';
-    }
-
-    define('ADMIN_EMAIL', 'admin@spendwise.com');
-    define('ADMIN_PASSWORD', 'Password123'); 
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        if ($email === ADMIN_EMAIL && $password === ADMIN_PASSWORD) {
-            $_SESSION['user_id'] = 0; 
-            $_SESSION['user_name'] = 'System Admin';
-            $_SESSION['role'] = 'admin';
-            
-            echo "<script>
-                    window.addEventListener('DOMContentLoaded', (event) => {
-                        showModal('Success!', 'Admin login successful!', 'admin_dashboard.php');
-                    });
-                  </script>";
-            exit();
-        }
-
-        try {
-            $sql = "SELECT id, first_name, last_name, password FROM users WHERE email = :email";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(['email' => $email]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
-                $_SESSION['role'] = 'user';
-                
-                echo "<script>
-                        window.addEventListener('DOMContentLoaded', (event) => {
-                            showModal('Success!', 'Login successful!', 'dashboard.php');
-                        });
-                      </script>";
-            } else {
-                echo "<script>
-                        window.addEventListener('DOMContentLoaded', (event) => {
-                            showModal('Error', 'Invalid email or password.', null);
-                        });
-                      </script>";
-            }
-        } catch (PDOException $e) {
-            echo "<script>
-                    window.addEventListener('DOMContentLoaded', (event) => {
-                        showModal('Error', 'Database error.', null);
-                    });
-                  </script>";
-        }
-    }
-    ?>
 
     <!-- JavaScript to handle modal behavior -->
     <script>
@@ -115,6 +97,12 @@
                 }
             }
         }
+
+        <?php if (!empty($popup_script)): ?>
+            window.addEventListener('DOMContentLoaded', () => {
+                <?php echo $popup_script; ?>
+            });
+        <?php endif; ?>
     </script>
 </body>
 </html>

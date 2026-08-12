@@ -9,17 +9,15 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
-    
-    if ($delete_id != $_SESSION['user_id']) {
-        $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
-        $stmt->execute([$delete_id]);
-        
-        header("Location: admin_dashboard.php?msg=deleted");
-        exit();
-    }
+
+    $stmt = $pdo->prepare("DELETE FROM user WHERE user_id = ?");
+    $stmt->execute([$delete_id]);
+
+    header("Location: admin_dashboard.php?msg=deleted");
+    exit();
 }
 
-$stmt = $pdo->query("SELECT * FROM users");
+$stmt = $pdo->query("SELECT user_id, username, email FROM user ORDER BY user_id");
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -57,40 +55,34 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="main-content">
         <h1>User Management</h1>
-        
+
         <div class="card">
             <h3>Registered Users</h3>
             <?php if(isset($_GET['msg'])): ?>
                 <p style="color: green;">User deleted successfully.</p>
             <?php endif; ?>
-            
+
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
+                        <th>Username</th>
                         <th>Email</th>
-                        <th>Role</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($users as $user): ?>
                     <tr>
-                        <td><?php echo $user['id']; ?></td>
-                        <td><?php echo htmlspecialchars($user['full_name']); ?></td>
+                        <td><?php echo $user['user_id']; ?></td>
+                        <td><?php echo htmlspecialchars($user['username']); ?></td>
                         <td><?php echo htmlspecialchars($user['email']); ?></td>
-                        <td><?php echo ucfirst($user['role']); ?></td>
                         <td>
-                            <?php if ($user['id'] != $_SESSION['user_id']): ?>
-                                <a href="admin_dashboard.php?delete=<?php echo $user['id']; ?>" 
-                                   class="delete-btn" 
-                                   onclick="return confirm('Are you sure you want to delete this user? This cannot be undone.')">
-                                   Delete
-                                </a>
-                            <?php else: ?>
-                                <span>(You)</span>
-                            <?php endif; ?>
+                            <a href="admin_dashboard.php?delete=<?php echo $user['user_id']; ?>"
+                               class="delete-btn"
+                               onclick="return confirm('Are you sure you want to delete this user? This cannot be undone.')">
+                               Delete
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
