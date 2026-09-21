@@ -27,7 +27,7 @@ body.auth-page {
     color: #8D6E63;
 }
 
-/* Wrapper to center the register card nicely */
+
 .auth-wrapper {
     flex: 1;
     display: flex;
@@ -36,7 +36,7 @@ body.auth-page {
     padding: 20px;
 }
 
-/* Card Container */
+
 .auth-container {
     background: #ffffff; 
     padding: 20px 25px; 
