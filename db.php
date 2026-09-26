@@ -1,7 +1,7 @@
 <?php
 $host = 'localhost';
 $dbname = 'ExpenseTracker';
-$username = 'root'; // Default XAMPP username
+$username = 'root'; 
 $password = '';     // Default XAMPP password is empty
 
 try {
