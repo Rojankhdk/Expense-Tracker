@@ -1,0 +1,124 @@
+:root {
+    --bg-beige: #F5F5DC;
+    --hero-beige: #FAF3E0;
+    --text-brown: #5D4037;
+    --deep-brown: #3E2723;
+    --button-brown: #8D6E63;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-beige);
+    color: var(--text-brown);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 5%;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--deep-brown);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-brown);
+    font-weight: 500;
+}
+
+.nav-btn {
+    border: 1px solid var(--deep-brown);
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-btn.signup {
+    background-color: var(--deep-brown);
+    color: var(--white);
+    border: none;
+}
+
+.nav-btn.signup:hover {
+    background-color: var(--button-brown);
+}
+
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background-color: var(--hero-beige);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    color: var(--deep-brown);
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 30px;
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--deep-brown);
+    color: var(--white);
+    padding: 15px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--button-brown);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 50px 5%;
+}
+
+.feature-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.feature-card h3 {
+    color: var(--deep-brown);
+    margin-bottom: 10px;
+}
+
+footer {
+    text-align: center;
+    padding: 40px;
+    background-color: var(--hero-beige);
+    color: var(--deep-brown);
+    border-top: 1px solid var(--button-brown);
+}
